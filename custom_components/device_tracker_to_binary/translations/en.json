@@ -1,0 +1,57 @@
+{
+  "title": "Device Tracker as Binary Sensor",
+  "config": {
+    "step": {
+      "user": {
+        "data": {
+          "entity_id": "Device tracker",
+          "device_class": "Binary sensor device class"
+        },
+        "description": "Pick a device tracker to expose as a binary sensor. The original device tracker will be hidden. The binary sensor is on when the tracker reports 'home' and off otherwise."
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "device_class": "Binary sensor device class"
+        }
+      }
+    }
+  },
+  "selector": {
+    "device_class": {
+      "options": {
+        "battery": "Battery",
+        "battery_charging": "Battery charging",
+        "carbon_monoxide": "Carbon monoxide",
+        "cold": "Cold",
+        "connectivity": "Connectivity",
+        "door": "Door",
+        "garage_door": "Garage door",
+        "gas": "Gas",
+        "heat": "Heat",
+        "light": "Light",
+        "lock": "Lock",
+        "moisture": "Moisture",
+        "motion": "Motion",
+        "moving": "Moving",
+        "occupancy": "Occupancy",
+        "opening": "Opening",
+        "plug": "Plug",
+        "power": "Power",
+        "presence": "Presence",
+        "problem": "Problem",
+        "running": "Running",
+        "safety": "Safety",
+        "smoke": "Smoke",
+        "sound": "Sound",
+        "tamper": "Tamper",
+        "update": "Update",
+        "vibration": "Vibration",
+        "window": "Window"
+      }
+    }
+  }
+}
