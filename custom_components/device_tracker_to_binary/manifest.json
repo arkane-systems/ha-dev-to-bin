@@ -1,0 +1,10 @@
+{
+  "domain": "device_tracker_to_binary",
+  "name": "Device Tracker as Binary Sensor",
+  "codeowners": [],
+  "config_flow": true,
+  "documentation": "https://github.com/arkane-systems/ha-dev-to-bin",
+  "integration_type": "helper",
+  "iot_class": "calculated",
+  "version": "1.0.0"
+}
