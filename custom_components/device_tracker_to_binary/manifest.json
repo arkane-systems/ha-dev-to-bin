@@ -5,7 +5,7 @@
   "config_flow": true,
   "documentation": "https://github.com/arkane-systems/ha-dev-to-bin",
   "integration_type": "helper",
-  "issue_tracker": "https://github.com/arkane-systems/ha-dev-to-bin/issues",
   "iot_class": "calculated",
+  "issue_tracker": "https://github.com/arkane-systems/ha-dev-to-bin/issues",
   "version": "1.0.0"
 }
