@@ -5,6 +5,9 @@ sensor. The binary sensor is **on** (true) when the tracker reports `home`, and 
 (false) for any other state (e.g. `not_home` or a named zone). The original device
 tracker is hidden while the helper is active and restored when the helper is removed.
 
+This is useful when you have a network integration which presents device online presence
+as device trackers, while what you really want to have are connectivity sensors.
+
 ## Installation
 
 ### HACS (recommended)
