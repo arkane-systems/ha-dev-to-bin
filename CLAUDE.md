@@ -10,11 +10,28 @@ registered as a "helper" integration (`integration_type: helper` in manifest.jso
 users create instances via **Settings → Devices & Services → Helpers**, not through
 the normal integration discovery/setup flow.
 
-There is no build system, package manifest, linter config, or test suite in this repo —
-it's pure Python source consumed directly by a Home Assistant instance. There are no
-commands to build/lint/test; changes are validated by installing the component into a
-running Home Assistant and exercising it there, or by reasoning about the Home Assistant
-core APIs being called.
+There is no build system, package manifest, or linter config in this repo — it's pure
+Python source consumed directly by a Home Assistant instance. There is a lightweight
+smoke-test suite (see below); beyond that, changes are validated by installing the
+component into a running Home Assistant and exercising it there, or by reasoning about
+the Home Assistant core APIs being called.
+
+## Testing
+
+```sh
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements_test.txt
+pytest
+```
+
+`tests/test_smoke.py` uses `pytest-homeassistant-custom-component` to spin up a real
+(in-memory) Home Assistant instance and covers the two things most likely to silently
+break on a core upgrade: the tracker-state-to-binary-sensor mapping in
+`binary_sensor.py` (home/away/zone/unavailable, and live state-change tracking), and the
+config-flow side effects in `__init__.py`/`config_flow.py` (hiding the wrapped tracker
+on creation, unhiding it on removal). This is intentionally a smoke suite, not full
+coverage — it exists because those two behaviors are non-obvious and easy to regress,
+not as a general testing mandate for this small, feature-frozen integration.
 
 ## Behavior
 
