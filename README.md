@@ -1,4 +1,4 @@
-# ![icon](assets/ha-dev-to-bin-32x32.png) ha-dev-to-bin
+# ![icon](assets/ha-dev-to-bin-32px.png) ha-dev-to-bin
 
 A Home Assistant helper integration that exposes a device tracker entity as a binary
 sensor. The binary sensor is **on** (true) when the tracker reports `home`, and **off**
