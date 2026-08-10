@@ -1,5 +1,9 @@
 # ha-dev-to-bin
 
+<p align="center">
+  <img src="custom_components/device_tracker_to_binary/brand/icon.png" alt="Device Tracker as Binary Sensor icon" width="128">
+</p>
+
 A Home Assistant helper integration that exposes a device tracker entity as a binary
 sensor. The binary sensor is **on** (true) when the tracker reports `home`, and **off**
 (false) for any other state (e.g. `not_home` or a named zone). The original device
