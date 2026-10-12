@@ -10,6 +10,8 @@ from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.device_tracker_to_binary.const import DOMAIN
 
+from .common import get_state
+
 
 async def test_setup_fails_for_unknown_source_uuid(hass: HomeAssistant) -> None:
     """Setup errors out when the stored source entity registry ID no longer exists."""
@@ -75,7 +77,7 @@ async def test_unload_entry(hass: HomeAssistant) -> None:
     await hass.async_block_till_done()
 
     assert entry.state is ConfigEntryState.NOT_LOADED
-    assert hass.states.get(sensor_id).state == STATE_UNAVAILABLE
+    assert get_state(hass, sensor_id).state == STATE_UNAVAILABLE
 
 
 async def test_source_entity_id_change_updates_entry(hass: HomeAssistant) -> None:
@@ -93,7 +95,7 @@ async def test_source_entity_id_change_updates_entry(hass: HomeAssistant) -> Non
 
     hass.states.async_set("device_tracker.renamed", STATE_NOT_HOME)
     await hass.async_block_till_done()
-    assert hass.states.get(sensor_id).state == STATE_OFF
+    assert get_state(hass, sensor_id).state == STATE_OFF
 
 
 async def test_source_entity_removed_removes_entry(hass: HomeAssistant) -> None:

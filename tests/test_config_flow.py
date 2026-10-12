@@ -16,6 +16,8 @@ from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.device_tracker_to_binary.const import DOMAIN
 
+from .common import get_state
+
 
 async def test_user_flow_unregistered_tracker(hass: HomeAssistant) -> None:
     """A tracker with no registry entry is accepted and titled from its state."""
@@ -102,7 +104,7 @@ async def test_options_flow_changes_device_class(hass: HomeAssistant) -> None:
     registry = er.async_get(hass)
     sensor_id = registry.async_get_entity_id("binary_sensor", DOMAIN, entry.entry_id)
     assert sensor_id is not None
-    assert hass.states.get(sensor_id).attributes[ATTR_DEVICE_CLASS] == "connectivity"
+    assert get_state(hass, sensor_id).attributes[ATTR_DEVICE_CLASS] == "connectivity"
 
     result = await hass.config_entries.options.async_init(entry.entry_id)
     assert result["type"] is FlowResultType.FORM
@@ -118,7 +120,7 @@ async def test_options_flow_changes_device_class(hass: HomeAssistant) -> None:
         "entity_id": "device_tracker.test",
         "device_class": "presence",
     }
-    assert hass.states.get(sensor_id).attributes[ATTR_DEVICE_CLASS] == "presence"
+    assert get_state(hass, sensor_id).attributes[ATTR_DEVICE_CLASS] == "presence"
 
 
 async def _setup_wrapping(
@@ -157,7 +159,7 @@ async def test_reconfigure_switches_tracker(hass: HomeAssistant) -> None:
     hass.states.async_set(new.entity_id, STATE_NOT_HOME)
     sensor_id = registry.async_get_entity_id("binary_sensor", DOMAIN, entry.entry_id)
     assert sensor_id is not None
-    assert hass.states.get(sensor_id).state == STATE_ON
+    assert get_state(hass, sensor_id).state == STATE_ON
 
     result = await entry.start_reconfigure_flow(hass)
     assert result["type"] is FlowResultType.FORM
@@ -178,7 +180,7 @@ async def test_reconfigure_switches_tracker(hass: HomeAssistant) -> None:
     assert old_entry is not None and old_entry.hidden_by is None
     assert new_entry is not None
     assert new_entry.hidden_by == er.RegistryEntryHider.INTEGRATION
-    assert hass.states.get(sensor_id).state == STATE_OFF
+    assert get_state(hass, sensor_id).state == STATE_OFF
 
 
 async def test_reconfigure_same_tracker(hass: HomeAssistant) -> None:

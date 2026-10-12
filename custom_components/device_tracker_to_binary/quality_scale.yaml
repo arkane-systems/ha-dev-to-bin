@@ -121,4 +121,4 @@ rules:
   inject-websession:
     status: exempt
     comment: The integration has no external dependency and makes no HTTP requests.
-  strict-typing: todo
+  strict-typing: done

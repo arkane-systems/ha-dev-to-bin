@@ -10,6 +10,8 @@ from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.device_tracker_to_binary.const import DOMAIN
 
+from .common import get_state
+
 TRACKER_ENTITY_ID = "device_tracker.test"
 
 
@@ -36,13 +38,13 @@ async def _setup_entry(hass: HomeAssistant, tracker_state: str) -> str:
 async def test_binary_sensor_on_when_tracker_home(hass: HomeAssistant) -> None:
     """The binary sensor is on when the tracker reports home."""
     entity_id = await _setup_entry(hass, STATE_HOME)
-    assert hass.states.get(entity_id).state == "on"
+    assert get_state(hass, entity_id).state == "on"
 
 
 async def test_binary_sensor_off_when_tracker_away(hass: HomeAssistant) -> None:
     """The binary sensor is off when the tracker reports not_home."""
     entity_id = await _setup_entry(hass, STATE_NOT_HOME)
-    assert hass.states.get(entity_id).state == "off"
+    assert get_state(hass, entity_id).state == "off"
 
 
 async def test_binary_sensor_off_when_tracker_in_named_zone(
@@ -50,7 +52,7 @@ async def test_binary_sensor_off_when_tracker_in_named_zone(
 ) -> None:
     """The binary sensor is off when the tracker reports a named zone."""
     entity_id = await _setup_entry(hass, "work")
-    assert hass.states.get(entity_id).state == "off"
+    assert get_state(hass, entity_id).state == "off"
 
 
 async def test_binary_sensor_unavailable_when_tracker_unavailable(
@@ -58,17 +60,17 @@ async def test_binary_sensor_unavailable_when_tracker_unavailable(
 ) -> None:
     """The binary sensor becomes unavailable when the tracker is unavailable."""
     entity_id = await _setup_entry(hass, STATE_UNAVAILABLE)
-    assert hass.states.get(entity_id).state == STATE_UNAVAILABLE
+    assert get_state(hass, entity_id).state == STATE_UNAVAILABLE
 
 
 async def test_binary_sensor_tracks_state_changes(hass: HomeAssistant) -> None:
     """The binary sensor updates live as the tracker's state changes."""
     entity_id = await _setup_entry(hass, STATE_HOME)
-    assert hass.states.get(entity_id).state == "on"
+    assert get_state(hass, entity_id).state == "on"
 
     hass.states.async_set(TRACKER_ENTITY_ID, STATE_NOT_HOME)
     await hass.async_block_till_done()
-    assert hass.states.get(entity_id).state == "off"
+    assert get_state(hass, entity_id).state == "off"
 
 
 async def test_config_flow_creates_entry_and_hides_source(
@@ -94,6 +96,7 @@ async def test_config_flow_creates_entry_and_hides_source(
     assert result["result"].options["device_class"] == "presence"
 
     updated_tracker_entry = registry.async_get(tracker_entry.entity_id)
+    assert updated_tracker_entry is not None
     assert updated_tracker_entry.hidden_by == er.RegistryEntryHider.INTEGRATION
 
 
@@ -121,4 +124,5 @@ async def test_remove_entry_unhides_source(hass: HomeAssistant) -> None:
     await hass.async_block_till_done()
 
     updated_tracker_entry = registry.async_get(tracker_entry.entity_id)
+    assert updated_tracker_entry is not None
     assert updated_tracker_entry.hidden_by is None
