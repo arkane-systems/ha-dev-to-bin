@@ -2,19 +2,16 @@
 
 from __future__ import annotations
 
-import logging
-
 import voluptuous as vol
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_ENTITY_ID, Platform
 from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import ConfigEntryError
 from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.helper_integration import async_handle_source_entity_changes
 
 from .const import DOMAIN
-
-_LOGGER = logging.getLogger(__name__)
 
 _PLATFORMS = [Platform.BINARY_SENSOR]
 
@@ -27,12 +24,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         entity_id = er.async_validate_entity_id(
             entity_registry, entry.options[CONF_ENTITY_ID]
         )
-    except vol.Invalid:
-        _LOGGER.error(
-            "Failed to set up device_tracker_to_binary for unknown entity %s",
-            entry.options[CONF_ENTITY_ID],
-        )
-        return False
+    except vol.Invalid as err:
+        raise ConfigEntryError(
+            translation_domain=DOMAIN,
+            translation_key="source_entity_not_found",
+            translation_placeholders={"entity_id": entry.options[CONF_ENTITY_ID]},
+        ) from err
 
     tracker_entry = entity_registry.async_get(entity_id)
     source_device_id = tracker_entry.device_id if tracker_entry else None

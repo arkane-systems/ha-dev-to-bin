@@ -42,3 +42,15 @@ device:
 
 After creation you can change the **device class** at any time via the integration's
 *Configure* button in **Settings → Devices & Services**.
+
+## Removal
+
+1. Go to **Settings → Devices & Services → Helpers**.
+2. Select the *Device Tracker as Binary Sensor* helper you want to remove.
+3. Open the menu (⋮) and choose **Delete**.
+
+Removing the helper deletes its binary sensor and un-hides the original device tracker.
+Any automations, scripts or dashboards that reference the binary sensor will need to be
+updated to use the device tracker (or another entity) instead. No restart is required.
+If you installed via HACS and no longer need the integration at all, you can then remove
+it from HACS and restart Home Assistant.
