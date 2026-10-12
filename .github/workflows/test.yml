@@ -20,4 +20,8 @@ jobs:
         run: pip install -r requirements_test.txt
 
       - name: Run tests
-        run: pytest
+        run: >-
+          pytest
+          --cov=custom_components.device_tracker_to_binary
+          --cov-report=term-missing
+          --cov-fail-under=95

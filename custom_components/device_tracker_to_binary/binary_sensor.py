@@ -20,6 +20,9 @@ from homeassistant.helpers.event import async_track_state_change_event
 
 from .const import CONF_DEVICE_CLASS, DEFAULT_DEVICE_CLASS, DOMAIN
 
+# Push-updated from source state changes; no update requests to throttle.
+PARALLEL_UPDATES = 0
+
 
 async def async_setup_entry(
     hass: HomeAssistant,

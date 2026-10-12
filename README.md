@@ -38,10 +38,18 @@ device:
 | `not_home` / zone    | off (false)   |
 | unavailable / unknown | unavailable  |
 
+## Configuration parameters
+
+| Parameter | Required | Set during | Description |
+|-----------|----------|------------|-------------|
+| **Device tracker** | yes | setup | The `device_tracker` entity to wrap. Each tracker can be wrapped by only one helper. While the helper exists the tracker is hidden; the binary sensor joins the tracker's device (if it has one) and takes its name and entity category. |
+| **Binary sensor device class** | no (default **connectivity**) | setup, *Configure* | The [binary sensor device class](https://www.home-assistant.io/integrations/binary_sensor/#device-class), which controls how the on/off states are labelled (e.g. *Connected/Disconnected*, *Home/Away* for `presence`) and the icon shown. |
+
 ## Options
 
 After creation you can change the **device class** at any time via the integration's
-*Configure* button in **Settings → Devices & Services**.
+*Configure* button in **Settings → Devices & Services**. Saving reloads the helper
+immediately; no restart is needed.
 
 ## Removal
 
