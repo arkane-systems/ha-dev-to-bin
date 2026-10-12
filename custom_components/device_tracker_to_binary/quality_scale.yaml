@@ -70,21 +70,23 @@ rules:
   test-coverage: done
 
   # Gold
-  devices: todo
-  diagnostics: todo
+  devices:
+    status: done
+    comment: The binary sensor is attached to the wrapped tracker's device, if any.
+  diagnostics: done
   discovery-update-info:
     status: exempt
     comment: The integration is a user-created helper and is not discoverable.
   discovery:
     status: exempt
     comment: The integration is a user-created helper and is not discoverable.
-  docs-data-update: todo
-  docs-examples: todo
-  docs-known-limitations: todo
-  docs-supported-devices: todo
-  docs-supported-functions: todo
-  docs-troubleshooting: todo
-  docs-use-cases: todo
+  docs-data-update: done
+  docs-examples: done
+  docs-known-limitations: done
+  docs-supported-devices: done
+  docs-supported-functions: done
+  docs-troubleshooting: done
+  docs-use-cases: done
   dynamic-devices:
     status: exempt
     comment: Each config entry wraps exactly one entity chosen by the user.
@@ -96,15 +98,21 @@ rules:
   entity-translations:
     status: exempt
     comment: The entity name is copied from the user's wrapped device tracker.
-  exception-translations: todo
+  exception-translations: done
   icon-translations:
     status: exempt
     comment: >
       Icons come from the user-selected device class; an icon translation would
       override them.
-  reconfiguration-flow: todo
-  repair-issues: todo
-  stale-devices: todo
+  reconfiguration-flow: done
+  repair-issues:
+    status: done
+    comment: A repair issue is raised when the wrapped tracker no longer exists.
+  stale-devices:
+    status: done
+    comment: >
+      The integration creates no devices of its own; the helper is removed along with
+      its source entity by helper_integration.async_handle_source_entity_changes.
 
   # Platinum
   async-dependency:

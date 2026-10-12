@@ -12,10 +12,20 @@
           "entity_id": "The device tracker to wrap. It will be hidden while this helper exists, and restored when the helper is deleted.",
           "device_class": "Controls how the binary sensor's on/off states are labelled and which icon is shown in the frontend."
         }
+      },
+      "reconfigure": {
+        "description": "Pick a different device tracker for this helper to wrap. The previous tracker will be un-hidden and the new one hidden.",
+        "data": {
+          "entity_id": "Device tracker"
+        },
+        "data_description": {
+          "entity_id": "The device tracker to wrap. It will be hidden while this helper exists, and restored when the helper is deleted."
+        }
       }
     },
     "abort": {
-      "already_configured": "This device tracker is already wrapped by another Device Tracker as Binary Sensor helper."
+      "already_configured": "This device tracker is already wrapped by another Device Tracker as Binary Sensor helper.",
+      "reconfigure_successful": "Re-configuration was successful"
     }
   },
   "options": {
@@ -67,6 +77,12 @@
   "exceptions": {
     "source_entity_not_found": {
       "message": "The wrapped device tracker {entity_id} no longer exists"
+    }
+  },
+  "issues": {
+    "source_entity_missing": {
+      "title": "Wrapped device tracker for {title} is missing",
+      "description": "The Device Tracker as Binary Sensor helper **{title}** wraps `{entity_id}`, which no longer exists in the entity registry, so the helper cannot be set up.\n\nTo fix this, go to **Settings → Devices & Services → Helpers**, open the helper and either choose **Reconfigure** to wrap a different device tracker, or **Delete** it."
     }
   }
 }

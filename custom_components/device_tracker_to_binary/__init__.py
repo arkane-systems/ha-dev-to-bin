@@ -8,12 +8,18 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_ENTITY_ID, Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryError
-from homeassistant.helpers import entity_registry as er
+from homeassistant.helpers import entity_registry as er, issue_registry as ir
 from homeassistant.helpers.helper_integration import async_handle_source_entity_changes
 
 from .const import DOMAIN
+from .helpers import async_unhide_source
 
 _PLATFORMS = [Platform.BINARY_SENSOR]
+
+
+def _source_missing_issue_id(entry: ConfigEntry) -> str:
+    """Return the repair issue ID for an entry whose source entity is missing."""
+    return f"source_entity_missing_{entry.entry_id}"
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
@@ -25,11 +31,25 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             entity_registry, entry.options[CONF_ENTITY_ID]
         )
     except vol.Invalid as err:
+        ir.async_create_issue(
+            hass,
+            DOMAIN,
+            _source_missing_issue_id(entry),
+            is_fixable=False,
+            severity=ir.IssueSeverity.WARNING,
+            translation_key="source_entity_missing",
+            translation_placeholders={
+                "title": entry.title,
+                "entity_id": entry.options[CONF_ENTITY_ID],
+            },
+        )
         raise ConfigEntryError(
             translation_domain=DOMAIN,
             translation_key="source_entity_not_found",
             translation_placeholders={"entity_id": entry.options[CONF_ENTITY_ID]},
         ) from err
+
+    ir.async_delete_issue(hass, DOMAIN, _source_missing_issue_id(entry))
 
     tracker_entry = entity_registry.async_get(entity_id)
     source_device_id = tracker_entry.device_id if tracker_entry else None
@@ -67,21 +87,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 async def async_remove_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
     """Remove a config entry.
 
-    Unhides the wrapped device tracker entity and restores assistant expose settings.
+    Unhides the wrapped device tracker entity and clears any repair issue.
     """
-    registry = er.async_get(hass)
-
-    try:
-        tracker_entity_id = er.async_validate_entity_id(
-            registry, entry.options[CONF_ENTITY_ID]
-        )
-    except vol.Invalid:
-        # The source entity has been removed from the entity registry.
-        return
-
-    if not (tracker_entry := registry.async_get(tracker_entity_id)):
-        return
-
-    # Unhide the wrapped entity.
-    if tracker_entry.hidden_by == er.RegistryEntryHider.INTEGRATION:
-        registry.async_update_entity(tracker_entity_id, hidden_by=None)
+    ir.async_delete_issue(hass, DOMAIN, _source_missing_issue_id(entry))
+    async_unhide_source(hass, entry.options[CONF_ENTITY_ID])
