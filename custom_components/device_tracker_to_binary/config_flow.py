@@ -11,6 +11,7 @@ from homeassistant.components.binary_sensor import BinarySensorDeviceClass
 from homeassistant.const import CONF_ENTITY_ID
 from homeassistant.helpers import entity_registry as er, selector
 from homeassistant.helpers.schema_config_entry_flow import (
+    SchemaCommonFlowHandler,
     SchemaConfigFlowHandler,
     SchemaFlowFormStep,
     wrapped_entity_config_entry_title,
@@ -19,6 +20,16 @@ from homeassistant.helpers.schema_config_entry_flow import (
 from .const import CONF_DEVICE_CLASS, DEFAULT_DEVICE_CLASS, DOMAIN
 
 _DEVICE_CLASS_OPTIONS = [dc.value for dc in BinarySensorDeviceClass]
+
+
+async def _validate_unique_tracker(
+    handler: SchemaCommonFlowHandler, user_input: dict[str, Any]
+) -> dict[str, Any]:
+    """Abort if the selected tracker is already wrapped by another helper."""
+    flow = handler.parent_handler
+    assert isinstance(flow, SchemaConfigFlowHandler)
+    flow._async_abort_entries_match({CONF_ENTITY_ID: user_input[CONF_ENTITY_ID]})
+    return user_input
 
 CONFIG_FLOW: dict[str, SchemaFlowFormStep] = {
     "user": SchemaFlowFormStep(
@@ -36,7 +47,8 @@ CONFIG_FLOW: dict[str, SchemaFlowFormStep] = {
                     ),
                 ),
             }
-        )
+        ),
+        validate_user_input=_validate_unique_tracker,
     ),
 }
 

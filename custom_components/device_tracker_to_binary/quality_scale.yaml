@@ -1,0 +1,116 @@
+# Self-assessment against the Home Assistant integration quality scale:
+# https://developers.home-assistant.io/docs/core/integration-quality-scale/rules
+# Home Assistant does not grade custom integrations; this file tracks the yardstick.
+rules:
+  # Bronze
+  action-setup:
+    status: exempt
+    comment: The integration does not provide any service actions.
+  appropriate-polling:
+    status: exempt
+    comment: The binary sensor is push-updated from source state changes and never polls.
+  brands: done
+  common-modules:
+    status: exempt
+    comment: A single entity with no coordinator or shared base class.
+  config-flow-test-coverage: done
+  config-flow: done
+  dependency-transparency:
+    status: exempt
+    comment: The integration has no external requirements.
+  docs-actions:
+    status: exempt
+    comment: The integration does not provide any service actions.
+  docs-triggers:
+    status: exempt
+    comment: The integration does not provide any triggers.
+  docs-conditions:
+    status: exempt
+    comment: The integration does not provide any conditions.
+  docs-high-level-description: done
+  docs-installation-instructions: done
+  docs-removal-instructions: done
+  entity-event-setup: done
+  entity-unique-id: done
+  has-entity-name:
+    status: exempt
+    comment: >
+      The binary sensor mirrors the wrapped tracker's has_entity_name and name, in the
+      same way as core's switch_as_x helper, so that it reads as a drop-in replacement
+      for the hidden tracker.
+  runtime-data:
+    status: exempt
+    comment: The integration has no runtime data to store on the config entry.
+  test-before-configure:
+    status: exempt
+    comment: >
+      There is no connection to test; the entity selector only offers existing
+      device trackers.
+  test-before-setup: done
+  unique-config-entry: done
+
+  # Silver
+  action-exceptions:
+    status: exempt
+    comment: The integration does not provide any service actions.
+  config-entry-unloading: done
+  docs-configuration-parameters: todo
+  docs-installation-parameters: done
+  entity-unavailable: done
+  integration-owner: done
+  log-when-unavailable:
+    status: exempt
+    comment: >
+      Availability mirrors the wrapped tracker, whose own integration already logs
+      outages; logging again here would duplicate it.
+  parallel-updates: todo
+  reauthentication-flow:
+    status: exempt
+    comment: The integration requires no authentication.
+  test-coverage: todo
+
+  # Gold
+  devices: todo
+  diagnostics: todo
+  discovery-update-info:
+    status: exempt
+    comment: The integration is a user-created helper and is not discoverable.
+  discovery:
+    status: exempt
+    comment: The integration is a user-created helper and is not discoverable.
+  docs-data-update: todo
+  docs-examples: todo
+  docs-known-limitations: todo
+  docs-supported-devices: todo
+  docs-supported-functions: todo
+  docs-troubleshooting: todo
+  docs-use-cases: todo
+  dynamic-devices:
+    status: exempt
+    comment: Each config entry wraps exactly one entity chosen by the user.
+  entity-category: done
+  entity-device-class: done
+  entity-disabled-by-default:
+    status: exempt
+    comment: The single binary sensor is the purpose of the helper.
+  entity-translations:
+    status: exempt
+    comment: The entity name is copied from the user's wrapped device tracker.
+  exception-translations: todo
+  icon-translations:
+    status: exempt
+    comment: >
+      Icons come from the user-selected device class; an icon translation would
+      override them.
+  reconfiguration-flow: todo
+  repair-issues: todo
+  stale-devices: todo
+
+  # Platinum
+  async-dependency:
+    status: exempt
+    comment: The integration has no external dependency.
+  inject-websession:
+    status: exempt
+    comment: The integration has no external dependency and makes no HTTP requests.
+  strict-typing: todo
