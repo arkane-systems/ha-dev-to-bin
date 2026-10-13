@@ -77,12 +77,18 @@ class DeviceTrackerBinarySensor(BinarySensorEntity):
         entity_category = tracker_entry.entity_category if tracker_entry else None
         has_entity_name = tracker_entry.has_entity_name if tracker_entry else False
 
-        name: str | None = config_entry_title
-        if tracker_entry and tracker_entry.original_name:
-            name = tracker_entry.original_name
-
-        if device_id and (device := device_registry.async_get(device_id)):
+        device = device_registry.async_get(device_id) if device_id else None
+        if device is not None:
             self.device_entry = device
+
+        name: str | None = config_entry_title
+        if tracker_entry is not None:
+            if has_entity_name and device is not None:
+                # Mirror the tracker exactly: an empty or missing name means the
+                # entity is named after its device alone.
+                name = tracker_entry.original_name or None
+            elif tracker_entry.original_name:
+                name = tracker_entry.original_name
 
         self._attr_entity_category = entity_category
         self._attr_has_entity_name = has_entity_name
