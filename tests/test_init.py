@@ -5,7 +5,7 @@ from __future__ import annotations
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.const import STATE_HOME, STATE_NOT_HOME, STATE_OFF, STATE_UNAVAILABLE
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers import entity_registry as er
+from homeassistant.helpers import entity_registry as er, issue_registry as ir
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.device_tracker_to_binary.const import DOMAIN
@@ -30,6 +30,16 @@ async def test_setup_fails_for_unknown_source_uuid(hass: HomeAssistant) -> None:
     assert entry.reason == (
         "The wrapped device tracker 0123456789abcdef0123456789abcdef no longer exists"
     )
+
+    issue_id = f"source_entity_missing_{entry.entry_id}"
+    issue_registry = ir.async_get(hass)
+    issue = issue_registry.async_get_issue(DOMAIN, issue_id)
+    assert issue is not None
+    assert issue.translation_key == "source_entity_missing"
+
+    assert await hass.config_entries.async_remove(entry.entry_id)
+    await hass.async_block_till_done()
+    assert issue_registry.async_get_issue(DOMAIN, issue_id) is None
 
 
 async def _setup_registered(

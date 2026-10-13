@@ -8,8 +8,9 @@ from typing import Any
 import voluptuous as vol
 
 from homeassistant.components.binary_sensor import BinarySensorDeviceClass
+from homeassistant.config_entries import ConfigFlowResult
 from homeassistant.const import CONF_ENTITY_ID
-from homeassistant.helpers import entity_registry as er, selector
+from homeassistant.helpers import selector
 from homeassistant.helpers.schema_config_entry_flow import (
     SchemaCommonFlowHandler,
     SchemaConfigFlowHandler,
@@ -18,8 +19,15 @@ from homeassistant.helpers.schema_config_entry_flow import (
 )
 
 from .const import CONF_DEVICE_CLASS, DEFAULT_DEVICE_CLASS, DOMAIN
+from .helpers import async_hide_source, async_unhide_source
 
 _DEVICE_CLASS_OPTIONS = [dc.value for dc in BinarySensorDeviceClass]
+
+_TRACKER_SELECTOR = selector.EntitySelector(
+    selector.EntitySelectorConfig(domain="device_tracker"),
+)
+
+RECONFIGURE_SCHEMA = vol.Schema({vol.Required(CONF_ENTITY_ID): _TRACKER_SELECTOR})
 
 
 async def _validate_unique_tracker(
@@ -35,9 +43,7 @@ CONFIG_FLOW: dict[str, SchemaFlowFormStep] = {
     "user": SchemaFlowFormStep(
         vol.Schema(
             {
-                vol.Required(CONF_ENTITY_ID): selector.EntitySelector(
-                    selector.EntitySelectorConfig(domain="device_tracker"),
-                ),
+                vol.Required(CONF_ENTITY_ID): _TRACKER_SELECTOR,
                 vol.Optional(
                     CONF_DEVICE_CLASS, default=DEFAULT_DEVICE_CLASS
                 ): selector.SelectSelector(
@@ -80,12 +86,32 @@ class DeviceTrackerToBinaryConfigFlowHandler(SchemaConfigFlowHandler, domain=DOM
 
     def async_config_entry_title(self, options: Mapping[str, Any]) -> str:
         """Return config entry title and hide the wrapped entity if registered."""
-        registry = er.async_get(self.hass)
-        entity_entry = registry.async_get(options[CONF_ENTITY_ID])
-        if entity_entry is not None and not entity_entry.hidden:
-            registry.async_update_entity(
-                options[CONF_ENTITY_ID],
-                hidden_by=er.RegistryEntryHider.INTEGRATION,
+        async_hide_source(self.hass, options[CONF_ENTITY_ID])
+        return wrapped_entity_config_entry_title(self.hass, options[CONF_ENTITY_ID])
+
+    async def async_step_reconfigure(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        """Change which device tracker the helper wraps."""
+        entry = self._get_reconfigure_entry()
+
+        if user_input is None:
+            return self.async_show_form(
+                step_id="reconfigure",
+                data_schema=self.add_suggested_values_to_schema(
+                    RECONFIGURE_SCHEMA, entry.options
+                ),
             )
 
-        return wrapped_entity_config_entry_title(self.hass, options[CONF_ENTITY_ID])
+        old_entity_id = entry.options[CONF_ENTITY_ID]
+        new_entity_id = user_input[CONF_ENTITY_ID]
+        if new_entity_id != old_entity_id:
+            self._async_abort_entries_match({CONF_ENTITY_ID: new_entity_id})
+            async_unhide_source(self.hass, old_entity_id)
+            async_hide_source(self.hass, new_entity_id)
+
+        return self.async_update_reload_and_abort(
+            entry,
+            title=wrapped_entity_config_entry_title(self.hass, new_entity_id),
+            options={**entry.options, CONF_ENTITY_ID: new_entity_id},
+        )
