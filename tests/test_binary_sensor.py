@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import pytest
 from homeassistant.const import (
     ATTR_DEVICE_CLASS,
     ATTR_FRIENDLY_NAME,
@@ -97,6 +98,36 @@ async def test_metadata_copied_from_device_tracker(hass: HomeAssistant) -> None:
     assert sensor.device_id == device.id
     assert sensor.entity_category is EntityCategory.DIAGNOSTIC
     assert get_state(hass, sensor_id).attributes[ATTR_FRIENDLY_NAME] == "Phone Wi-Fi"
+
+
+@pytest.mark.parametrize("original_name", ["", None])
+async def test_device_named_tracker_names_sensor_after_device(
+    hass: HomeAssistant, original_name: str | None
+) -> None:
+    """A tracker named after its device alone yields a sensor named the same way."""
+    source_entry = MockConfigEntry(domain="test")
+    source_entry.add_to_hass(hass)
+    device = dr.async_get(hass).async_get_or_create(
+        config_entry_id=source_entry.entry_id,
+        identifiers={("test", "client")},
+        name="00:80:04:06:00:02",
+    )
+    tracker = er.async_get(hass).async_get_or_create(
+        "device_tracker",
+        "test",
+        "client_tracker",
+        config_entry=source_entry,
+        device_id=device.id,
+        has_entity_name=True,
+        original_name=original_name,
+    )
+    hass.states.async_set(tracker.entity_id, STATE_HOME)
+
+    _, sensor_id = await _setup_helper(hass, tracker.entity_id)
+
+    assert get_state(hass, sensor_id).attributes[ATTR_FRIENDLY_NAME] == (
+        "00:80:04:06:00:02"
+    )
 
 
 async def test_custom_name_copied_only_on_creation(hass: HomeAssistant) -> None:
