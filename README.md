@@ -1,5 +1,7 @@
 # ![icon](assets/ha-dev-to-bin-32px.png) ha-dev-to-bin
 
+[![hacs_badge](https://img.shields.io/badge/HACS-Default-41BDF5.svg)](https://github.com/hacs/integration)
+
 A Home Assistant helper integration that exposes a device tracker entity as a binary
 sensor. The binary sensor is **on** (true) when the tracker reports `home`, and **off**
 (false) for any other state (e.g. `not_home` or a named zone). The original device
@@ -49,8 +51,14 @@ therefore depends entirely on how often the source integration updates its track
 
 ### HACS (recommended)
 
-Add this repository as a custom repository in HACS, then install *Device Tracker as
-Binary Sensor*.
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=arkane-systems&repository=ha-dev-to-bin&category=integration)
+
+*Device Tracker as Binary Sensor* is included in the HACS default repositories, so it's
+searchable directly:
+
+1. Open **HACS → Integrations** in Home Assistant.
+2. Search for **Device Tracker as Binary Sensor** and install it.
+3. Restart Home Assistant.
 
 ### Manual
 
