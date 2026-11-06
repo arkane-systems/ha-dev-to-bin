@@ -49,16 +49,18 @@ therefore depends entirely on how often the source integration updates its track
 
 ## Installation
 
-### HACS (recommended)
+### Marketplace or HACS (recommended)
+
+*Device Tracker as Binary Sensor* is in the HACS default catalog. From Home Assistant
+2026.11, HACS is built into Home Assistant as the **Marketplace** (Settings →
+Marketplace); on earlier versions, install it through HACS.
 
 [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=arkane-systems&repository=ha-dev-to-bin&category=integration)
 
-*Device Tracker as Binary Sensor* is included in the HACS default repositories, so it's
-searchable directly:
-
-1. Open **HACS → Integrations** in Home Assistant.
-2. Search for **Device Tracker as Binary Sensor** and install it.
-3. Restart Home Assistant.
+1. Open *Device Tracker as Binary Sensor* with the button above (it opens the
+   Marketplace on 2026.11 or later, and HACS before that), or search for **Device
+   Tracker as Binary Sensor** in the Marketplace or HACS.
+2. Download it and restart Home Assistant.
 
 ### Manual
 
@@ -181,5 +183,5 @@ automation:
 Removing the helper deletes its binary sensor and un-hides the original device tracker.
 Any automations, scripts or dashboards that reference the binary sensor will need to be
 updated to use the device tracker (or another entity) instead. No restart is required.
-If you installed via HACS and no longer need the integration at all, you can then remove
-it from HACS and restart Home Assistant.
+If you installed via the Marketplace or HACS and no longer need the integration at all,
+you can then remove it there and restart Home Assistant.
