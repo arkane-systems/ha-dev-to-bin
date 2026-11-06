@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-A Home Assistant custom integration (installable via HACS or manual copy into
+A Home Assistant custom integration (installable via the Marketplace/HACS or manual copy into
 `custom_components/`) that wraps a `device_tracker` entity as a `binary_sensor`. It is
 registered as a "helper" integration (`integration_type: helper` in manifest.json), so
 users create instances via **Settings → Devices & Services → Helpers**, not through

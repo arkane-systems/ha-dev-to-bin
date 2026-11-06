@@ -1,6 +1,7 @@
 {
   "domain": "device_tracker_to_binary",
   "name": "Device Tracker as Binary Sensor",
+  "categories": ["helpers", "computers_network.monitoring"],
   "codeowners": ["@arkane-systems"],
   "config_flow": true,
   "documentation": "https://github.com/arkane-systems/ha-dev-to-bin",
